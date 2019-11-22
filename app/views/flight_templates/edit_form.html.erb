@@ -22,6 +22,15 @@
     <input type="text" id="departs_at" name="departs_at" class="form-control" value="<%= @flight.departs_at %>">
   </div>
 
+
+  <div class="form-check">
+    <input type="hidden" value="0" name="fifteen_minute_message_sent">
+    <input id="fifteen_minute_message_sent" class="form-check-input" name="fifteen_minute_message_sent" type="checkbox" value="1" <%= "checked" if @flight.fifteen_minute_message_sent %>>
+    <label for="fifteen_minute_message_sent" class="form-check-label">
+      Fifteen minute message sent
+    </label>
+  </div>
+
   <button class="btn btn-block btn-outline-secondary">
     Update flight
   </button>
