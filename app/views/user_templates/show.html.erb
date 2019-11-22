@@ -21,6 +21,13 @@
 
     <dl>
       <dt>
+        Phone number
+      </dt>
+      <dd>
+        <%= @user.phone_number %>
+      </dd>
+
+      <dt>
         Email
       </dt>
       <dd>
@@ -32,13 +39,6 @@
       </dt>
       <dd>
         <%= @user.password %>
-      </dd>
-
-      <dt>
-        Phone number
-      </dt>
-      <dd>
-        <%= @user.phone_number %>
       </dd>
 
       <dt>
@@ -58,3 +58,8 @@
   </div>
 </div>
 
+<div class="row mb-3">
+  <div class="col-md-8 offset-md-2">
+    <%= render partial: "user_templates/user_flights" %>
+  </div>
+</div>

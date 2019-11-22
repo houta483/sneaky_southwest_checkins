@@ -1,7 +1,17 @@
 class FlightsController < ApplicationController
+  before_action :current_user_must_be_flight_user, :only => [:edit_form, :update_row, :destroy_row]
+
+  def current_user_must_be_flight_user
+    flight = Flight.find(params["id_to_display"] || params["prefill_with_id"] || params["id_to_modify"] || params["id_to_remove"])
+
+    unless current_user == flight.user
+      redirect_to :back, :alert => "You are not authorized for that."
+    end
+  end
+
   def index
     @q = Flight.ransack(params[:q])
-    @flights = @q.result(:distinct => true).page(params[:page]).per(10)
+    @flights = @q.result(:distinct => true).includes(:user).page(params[:page]).per(10)
 
     render("flight_templates/index.html.erb")
   end
@@ -23,6 +33,8 @@ class FlightsController < ApplicationController
 
     @flight.description = params.fetch("description")
     @flight.departs_at = params.fetch("departs_at")
+    @flight.user_id = params.fetch("user_id")
+    @flight.fifteen_minute_message_sent = params.fetch("fifteen_minute_message_sent")
 
     if @flight.valid?
       @flight.save
@@ -44,6 +56,8 @@ class FlightsController < ApplicationController
 
     @flight.description = params.fetch("description")
     @flight.departs_at = params.fetch("departs_at")
+    
+    @flight.fifteen_minute_message_sent = params.fetch("fifteen_minute_message_sent")
 
     if @flight.valid?
       @flight.save
@@ -52,6 +66,14 @@ class FlightsController < ApplicationController
     else
       render("flight_templates/edit_form_with_errors.html.erb")
     end
+  end
+
+  def destroy_row_from_user
+    @flight = Flight.find(params.fetch("id_to_remove"))
+
+    @flight.destroy
+
+    redirect_to("/users/#{@flight.user_id}", notice: "Flight deleted successfully.")
   end
 
   def destroy_row
